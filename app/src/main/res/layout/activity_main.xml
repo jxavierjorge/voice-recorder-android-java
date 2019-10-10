@@ -6,37 +6,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="GRAVAÇÃO"
         android:textSize="30sp" />
-    <Button
-        android:text="RECORD"
+
+    <ToggleButton
+        android:id="@+id/t_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnStart"/>
-    <Button
+        android:checked="false"
+        android:textOff="REC"
+        android:textOn="STOP" />
+    <Chronometer
+        android:id="@+id/tempo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
-        android:id="@+id/btnStop"/>
+        android:textSize="30sp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="REPRODUÇÃO"
         android:textSize="30sp"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play"
-        android:id="@+id/btnPlay"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pause"
-        android:id="@+id/btnPause"/>
 
+    <ToggleButton
+        android:id="@+id/t_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="PLAY"
+        android:textOn="PAUSE"/>
 
 </LinearLayout>

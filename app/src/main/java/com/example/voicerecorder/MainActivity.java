@@ -11,19 +11,25 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnStart,btnStop,btnPlay,btnPause;
+    ToggleButton t_record,t_play;
     String pathSave = "";
     MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
+    Chronometer timer;
 
     final int REQUEST_PERMISSION_CODE = 1000;
 
@@ -35,80 +41,60 @@ public class MainActivity extends AppCompatActivity {
         if (!checkPermissionFromDevice())
             requestPermission();
 
-        btnStart = findViewById(R.id.btnStart);
-        btnStop = findViewById(R.id.btnStop);
-        btnPlay = findViewById(R.id.btnPlay);
-        btnPause = findViewById(R.id.btnPause);
+        t_record = findViewById(R.id.t_record);
+        t_play = findViewById(R.id.t_play);
+        timer = findViewById(R.id.tempo);
 
-            btnStart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (checkPermissionFromDevice())
-                    {
-                    pathSave = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"
-                            + UUID.randomUUID().toString()+"_audio_file.3gp";
-                    setupMediaRecorder();
-                    try {
-                        mediaRecorder.prepare();
-                        mediaRecorder.start();
-                    } catch (IOException e){
-                        e.printStackTrace();
-                    }
-
-                    btnPlay.setEnabled(false);
-                    btnStop.setEnabled(true);
-                    btnPause.setEnabled(false);
-                    btnStart.setEnabled(false);
-
-                    Toast.makeText(MainActivity.this,"Recording...",Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
+        t_record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    if (checkPermissionFromDevice()) {
+                        pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
+                                + UUID.randomUUID().toString() + "_audio_file.3gp";
+                        setupMediaRecorder();
+                        try {
+                            mediaRecorder.prepare();
+                            mediaRecorder.start();
+                            t_play.setEnabled(false);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(MainActivity.this, "Recording...", Toast.LENGTH_SHORT).show();
+                    } else {
                         requestPermission();
                     }
+                    timer.setBase(SystemClock.elapsedRealtime());
+                    timer.start();
                 }
-            });
-
-            btnStop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                else
+                {
+                    t_play.setEnabled(true);
                     mediaRecorder.stop();
-                    btnStop.setEnabled(false);
-                    btnPlay.setEnabled(true);
-                    btnPause.setEnabled(false);
-                    btnStart.setEnabled(true);
+                    timer.stop();
                 }
-            });
+            }
+        });
 
-            btnPlay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    btnStop.setEnabled(false);
-                    btnPause.setEnabled(true);
-                    btnStart.setEnabled(false);
-                    btnPlay.setEnabled(false);
-
+        t_play.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b)
+                {
                     mediaPlayer = new MediaPlayer();
                     try {
+                        t_record.setEnabled(false);
                         mediaPlayer.setDataSource(pathSave);
                         mediaPlayer.prepare();
                         mediaPlayer.start();
-                    } catch (IOException e){
+                    }catch(IOException e){
                         e.printStackTrace();
                     }
                     Toast.makeText(MainActivity.this, "Playing...", Toast.LENGTH_SHORT).show();
-
                 }
-            });
-
-            btnPause.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    btnStart.setEnabled(true);
-                    btnStop.setEnabled(false);
-                    btnPlay.setEnabled(true);
-                    btnPause.setEnabled(false);
-
+                else
+                {
+                    t_record.setEnabled(true);
                     if(mediaPlayer != null)
                     {
                         mediaPlayer.stop();
@@ -116,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
                         setupMediaRecorder();
                     }
                 }
-            });
+            }
+        });
         }
 
     private void setupMediaRecorder() {
@@ -146,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
             }
             break;
+            default:
+
         }
     }
 
