@@ -27,12 +27,10 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     ToggleButton t_record,t_play;
-    Button b_arquivo;
     String pathSave = "";
     MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
     Chronometer timer;
-    Intent i_tela_arquivo;
 
     final int REQUEST_PERMISSION_CODE = 1000;
 
@@ -47,17 +45,6 @@ public class MainActivity extends AppCompatActivity {
         t_record = findViewById(R.id.t_record);
         t_play = findViewById(R.id.t_play);
         timer = findViewById(R.id.tempo);
-        b_arquivo = findViewById(R.id.b_arquivo);
-
-
-        b_arquivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                i_tela_arquivo = new Intent(MainActivity.this,Tela_Arquivo.class);
-                startActivity(i_tela_arquivo);
-                System.out.println("Arquivo");
-            }
-        });
 
         t_record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
