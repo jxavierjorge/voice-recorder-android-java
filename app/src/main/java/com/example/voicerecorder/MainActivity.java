@@ -21,6 +21,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -39,6 +40,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        File file = new File(Environment.getExternalStorageDirectory() + "/Records");
+        boolean success = true;
+
+        //Código para criar um diretório para armazenar as gravações
+        if(!file.exists()){
+            Toast.makeText(getApplicationContext(),"Directory does not exist, create it",Toast.LENGTH_SHORT).show();
+            try {
+                file.mkdir();
+            }catch (Exception e){
+                success=false;
+            }
+        }else{
+
+        }
+        if(!success){
+            Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show();
+        }
+
         if (!checkPermissionFromDevice())
             requestPermission();
 
@@ -51,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     if (checkPermissionFromDevice()) {
-                        pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
-                                + UUID.randomUUID().toString() + "_audio_file.3gp";
+                        pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Records/"
+                                + UUID.randomUUID().toString() + "_audio_file.m4a";
                         setupMediaRecorder();
                         try {
                             mediaRecorder.prepare();
@@ -110,8 +129,10 @@ public class MainActivity extends AppCompatActivity {
     private void setupMediaRecorder() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setAudioSamplingRate(44100);
+        mediaRecorder.setAudioEncodingBitRate(96000);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mediaRecorder.setOutputFile(pathSave);
     }
 
