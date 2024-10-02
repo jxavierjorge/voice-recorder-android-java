@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Código para criar um diretório para armazenar as gravações
         if(!file.exists()){
-            Toast.makeText(getApplicationContext(),"Directory does not exist, create it",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Diretorio não existe, crie-o",Toast.LENGTH_SHORT).show();
             try {
                 file.mkdir();
             }catch (Exception e){
